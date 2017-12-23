@@ -177,6 +177,9 @@
           };
 
         });
+        req.addEventListener("error", function() {
+          console.error("httpGET req.status " + req.status);
+        });
         req.send(null);
       };
       // actions:
