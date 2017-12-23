@@ -55,6 +55,7 @@ var server = http.createServer((req, res) => {
     case "/": filePath = projectFolder + "/index.html"; break;
     default: filePath = projectFolder + req.url;
   };
+  filePath = decodeURIComponent(filePath);
 	fs.exists(filePath, function(exists){
     console.log(colors.yellow(filePath));
 		if(exists){
