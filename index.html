@@ -57,7 +57,7 @@
   <div class="container animated fadeIn">
 
     <h1>CALLX viewer</h1>
-    <p><span class='info text-muted'></span></p>
+    <p><span class='info'></span></p>
     <div class="input-group">
       <input type="text" class="form-control" id="substr" placeholder="Substring in file name..." />
       <span class="input-group-btn">
@@ -115,10 +115,36 @@
   </div><!-- /.container -->
 
   <script type="text/javascript">
+    function httpGET(arg){
+      let { url, cb } = arg;
+      var req = new XMLHttpRequest();
+      req.open("GET", url, true);
+      req.addEventListener("load", function() {
+        console.info("httpGET req.status " + req.status);
+        //console.log(req.responseText);
+        //pasteHTML(req.responseText);
+        if(req.status === 200){
+          //console.log(JSON.parse(req.responseText));
+          cb(req.responseText);// If array -> should be parsed...
+        };
+      });
+      req.addEventListener("error", function() {
+        console.error("httpGET req.status " + req.status);
+      });
+      req.send(null);
+    };
     function _globalGETForRemoveFileFn(fileName) {
-      //console.log(fileName);
-      console.warn(`GET for removing the ${fileName}`);
-      //...
+      let confirmed = confirm('Sould this file be removed from Back-end?\n[ YES ] - Delete file\n[ NO ] - Remove from playlist only');
+      console.log(typeof confirmed);
+      if( confirmed ){
+        fileName = encodeURIComponent(fileName);
+        httpGET({ url: `http://localhost:8080/removeFile?fileName=${fileName}`, cb: (text) => {
+          pasteHTML(`.info`, `<span class='text-info'>GET COMPLETED: ${text}</span>`);
+          // Need to call next ()...
+        } });
+      } else {
+        //alert(`Removing from folder aborted.`);
+      }
     };
     function pasteHTML (selector, html) { $(selector).html(html) };
     function setupAudio (arr) { //console.info(arr);
@@ -138,7 +164,7 @@
       		smoothPlayBar: true,
       		keyEnabled: true,
           playlistOptions: {
-            autoPlay: true,
+            autoPlay: false,
             enableRemoveControls: true
           },
       	},
@@ -148,64 +174,37 @@
 
       if(arr.length) $('#wrapper').css({ display: 'block' })
       else $('#wrapper').css({ display: 'none' });
-      pasteHTML(`.info`, `<span>${arr.length} elements found</span>`);
+      pasteHTML(`.info`, `<span class='text-muted'>${arr.length} elements received from Back-end.</span>`);
       $('.jp-play').focus();
     };
     $(function(){
-      var default_html = '<strong>GET to back-end</strong><br />For example: <code>http://localhost:8080/filter?substr=</code>';
+      var default_html = '<strong  class="text-muted">GET to back-end</strong><br />For example: <code>http://localhost:8080/filter?substr=</code>';
       pasteHTML(".info", default_html); // first
-      httpGET( "http://localhost:8080/filter?substr=", function(arr){ setupAudio(arr) } );
-      /*setupAudio([
-    		{
-    			title:"Cro Magnon Man",
-    			mp3:"http://www.jplayer.org/audio/mp3/TSP-01-Cro_magnon_man.mp3"
-    		},
-    		{
-    			title:"Your Face",
-    			mp3:"http://www.jplayer.org/audio/mp3/TSP-05-Your_face.mp3",
-    			oga:"http://www.jplayer.org/audio/ogg/TSP-05-Your_face.ogg"
-    		},
-    		{
-    			title:"Cyber Sonnet",
-    			mp3:"http://www.jplayer.org/audio/mp3/TSP-07-Cybersonnet.mp3",
-    			oga:"http://www.jplayer.org/audio/ogg/TSP-07-Cybersonnet.ogg"
-    		},
-    		{
-    			title:"Tempered Song",
-    			mp3:"http://www.jplayer.org/audio/mp3/Miaow-01-Tempered-song.mp3",
-    			oga:"http://www.jplayer.org/audio/ogg/Miaow-01-Tempered-song.ogg"
-    		}
-    	]);*/ // test
-      function httpGET(url, cb){
-        var req = new XMLHttpRequest();
-        req.open("GET", url, true);
-        req.addEventListener("load", function() {
-          console.info("httpGET req.status " + req.status);
-          //console.log(req.responseText);
-          //pasteHTML(req.responseText);
-          if(req.status === 200){
-            //console.log(JSON.parse(req.responseText));
-            cb(JSON.parse(req.responseText));
-          };
-
-        });
-        req.addEventListener("error", function() {
-          console.error("httpGET req.status " + req.status);
-        });
-        req.send(null);
-      };
-      // actions:
+      httpGET({ url: "http://localhost:8080/filter?substr=", cb: (arrWasNotParsed) => setupAudio(JSON.parse(arrWasNotParsed)) });
+      // Handlers should be set:
       $(".search").click(() => {
         if($('#substr').val()){
-          httpGET( "http://localhost:8080/filter?substr=" + document.getElementById('substr').value, function(arr){ setupAudio(arr) } )
-        }else{ console.warn(`Search value is empty!`) }
+          httpGET({
+            url: ("http://localhost:8080/filter?substr=" + document.getElementById('substr').value),
+            cb: (arrWasNotParsed) => setupAudio(JSON.parse(arrWasNotParsed))
+          })
+        }else{
+          console.warn(`Search value is empty!`);
+          pasteHTML(`.info`, `<span class='text-muted'>Search value is empty!</span>`);
+        }
       });
       $("#substr").keyup((e) => {
         if(e.which == 13){// enter
           //console.log(typeof e.target.value, e.target.value.length)
           if(e.target.value){
-            httpGET( "http://localhost:8080/filter?substr=" + e.target.value, function(arr){ setupAudio(arr) } );
-          }else{ console.warn(`Search value is empty!`) }
+            httpGET({
+              url: "http://localhost:8080/filter?substr=" + e.target.value,
+              cb: (arrWasNotParsed) => setupAudio(JSON.parse(arrWasNotParsed))
+            })
+          }else{
+            console.warn(`Search value is empty!`);
+            pasteHTML(`.info`, `<span class='text-muted'>Search value is empty!</span>`);
+          }
         }else{
           //pasteHTML(default_html);
         }

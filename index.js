@@ -41,16 +41,51 @@ function sendFilesList(response, pathToRead, query){
   //console.log("[" + resultArr.join(",") + "]");
 	response.end("[" + resultArr.join(",") + "]");
 }
+function removeFile(response, pathToRead, query){
+  let { fileName } = query;
+  fileName = decodeURIComponent(fileName).replace('&amp;', '&');
+  //console.log(`REMOVE FILE CALLED FOR: ${fileName}`);
+  fs.exists(pathToRead, function(exists){
+		if(exists){
+			//console.log(colors.green(`FILE EXISTS: ${pathToRead}`));
+      fs.unlink((pathToRead + '/' + fileName), function(err){
+        if(err) {
+          console.log(colors.red(`${err}`));
+          response.writeHead(404, {"Content-Type": "text/plain"});
+          response.end(`${err}`);
+          return;
+        }
+        else {
+          //console.log(colors.green('File deleted successfully.'));
+          response.writeHead(200, {"Content-Type": "text/plain"});
+          response.end(`${fileName} removed successfully.`);
+          return;
+        }
+      });
+		}else{
+      console.log(colors.red(`FILE DOES NOT EXISTS: ${pathToRead}`));
+      // Send to Front-end...
+      response.writeHead(404, {"Content-Type": "text/plain"});
+      response.end(`${fileName} does not exists!`);
+    }
+	});
+  //...
+}
 var server = http.createServer((req, res) => {
   // query checking
   var urlParsed = url.parse(req.url, true);
-  if(urlParsed.pathname === "/filter"){//console.log("filter detected urlParsed.query.substr=" + urlParsed.query.substr);
+  switch(urlParsed.pathname){
+  case '/filter':
     sendFilesList(res, callxFolder, urlParsed.query);
     return;
+  case '/removeFile':
+    removeFile(res, callxFolder, urlParsed.query);
+    return;
+  default: break;
   }
+
   // return pages & tools to Front-end:
   var filePath = false;
-
   switch(req.url){
     case "/": filePath = projectFolder + "/index.html"; break;
     default: filePath = projectFolder + req.url;
