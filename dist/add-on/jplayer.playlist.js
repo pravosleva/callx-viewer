@@ -229,7 +229,7 @@
 				$(this.cssSelector.playlist + " ul").slideUp(displayTime, function() {
 					var $this = $(this);
 					$(this).empty();
-					
+
 					$.each(self.playlist, function(i) {
 						$this.append(self._createListItem(self.playlist[i]));
 					});
@@ -304,6 +304,20 @@
 				var index = $(this).parent().parent().index();
 				self.remove(index);
 				self.blur(this);
+
+        /* GET to remove the file! */
+        let isFunction = (functionToCheck) => {
+          var getType = {};
+          return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+        };
+        let _removeFnName = '_globalGETForRemoveFileFn';
+        // Test:
+        //window[_removeFnName] = () => {};
+        //console.log(`_removeFnName exists= ${isFunction(window[_removeFnName])}`);
+        if(isFunction(window[_removeFnName])){
+          window[_removeFnName](this.nextElementSibling.innerHTML);
+        } else { console.error(`The function ${_removeFnName} does not exists in window scope!`) }
+
 			});
 		},
 		_updateControls: function() {
@@ -354,6 +368,8 @@
 			}
 		},
 		remove: function(index) {
+      //console.log('REMOVE (index) CALLED!');
+
 			var self = this;
 
 			if(index === undefined) {

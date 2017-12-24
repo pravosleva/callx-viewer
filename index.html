@@ -11,8 +11,10 @@
   ===================================-->
   <link href="./dist/skin/blue.monday/css/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="./lib/jquery.min.js"></script>
-  <script type="text/javascript" src="./dist/jplayer/jquery.jplayer.min.js"></script>
-  <script type="text/javascript" src="./dist/add-on/jplayer.playlist.min.js"></script>
+  <!--<script type="text/javascript" src="./dist/jplayer/jquery.jplayer.js"></script>-->
+  <script type="text/javascript" src="./dist/jplayer/jquery.jplayer.js"></script>
+  <!--<script type="text/javascript" src="./dist/add-on/jplayer.playlist.min.js"></script>-->
+  <script type="text/javascript" src="./dist/add-on/jplayer.playlist.js"></script>
 
   <link href="./lib/animate.css" rel="stylesheet" type="text/css" />
 
@@ -113,6 +115,11 @@
   </div><!-- /.container -->
 
   <script type="text/javascript">
+    function _globalGETForRemoveFileFn(fileName) {
+      //console.log(fileName);
+      console.warn(`GET for removing the ${fileName}`);
+      //...
+    };
     function pasteHTML (selector, html) { $(selector).html(html) };
     function setupAudio (arr) { //console.info(arr);
       // Read more: https://github.com/jplayer/jPlayer/blob/master/examples/blue.monday/demo-02-jPlayerPlaylist.html
@@ -129,8 +136,13 @@
       		useStateClassSkin: true,
       		autoBlur: false,
       		smoothPlayBar: true,
-      		keyEnabled: true
-      	}
+      		keyEnabled: true,
+          playlistOptions: {
+            autoPlay: true,
+            enableRemoveControls: true
+          },
+      	},
+
       );
       myPlaylist.setPlaylist(arr);
 
