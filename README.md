@@ -18,5 +18,6 @@ Will be started locally on :8080.
 ## TODO
 
 - [x] GET request for tracklist by `/filter?substr=[encodedString]`
+- [x] Filter by words wich seperated by spaces
 - [x] GET request by `_globalGETForRemoveFileFn (fileName:String)`.
 - [x] Back-end function to remove the file by GET `/removeFile?FileName=[encodedString]`. This function should receive the `fileName` as argument (wich was not decoded yet - the `fileName` will be decoded in this function).
