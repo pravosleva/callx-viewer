@@ -25,21 +25,15 @@ function sendFilesList(response, pathToRead, query){
   response.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
   var filesArr = fs.readdirSync(pathToRead);
   // needs to filter filesArr names by query.substr
-
   let _checkTheSubstrInStr = (substr, str) => (str.indexOf(substr)!==-1);//received args= encoded strs
   function _checkTheSubstrByWords (wordsAsSubstr, str) {
-    //console.log(`RECEIVED: str= ${str}, wordsAsSubstr= ${wordsAsSubstr}`);
     str = encodeURIComponent(String(str).toLowerCase());
     wordsAsSubstr = encodeURIComponent(String(wordsAsSubstr).toLowerCase());
-    //console.log(`ENCODED: str= ${str}, wordsAsSubstr= ${wordsAsSubstr}`);
     var flag = false;
     let words = wordsAsSubstr.split("%20"),
       _flags = [];
-    console.log(words);
     words.map( function (wrd, i, wrdsArr) {
-      // Global flag as result
       flag = _checkTheSubstrInStr (wrd, str);
-      // Array of results
       _flags[i] = _checkTheSubstrInStr (wrd, str);
     }, this);
     if (_flags.indexOf ( false ) !== -1) flag = false;
