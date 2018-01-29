@@ -1,5 +1,7 @@
 # Callx-Viewer
 
+![about MEG density](./imgs/callx-viewer.gif)
+
 ## About
 
 This is simple audioplayer for mp3 tracks (all mp3 should be put to `./test-audio` directory).
