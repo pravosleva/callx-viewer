@@ -1,6 +1,6 @@
 # Callx-Viewer
 
-![about MEG density](./imgs/callx-viewer.gif)
+![gif](./img/callx-viewer.gif)
 
 ## About
 
