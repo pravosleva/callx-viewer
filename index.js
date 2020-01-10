@@ -1,7 +1,7 @@
 "use strict";
-var http = require('http'),
+const http = require('http'),
   iconvlite = require('iconv-lite'),
-  port = 8080,
+  port = process.env.PORT || 8080,
   domain = '127.0.0.1',
   fs = require('fs'),
   projectFolder = '.',
@@ -11,6 +11,8 @@ var http = require('http'),
   colors = require('colors'),
   url = require('url'),
   mime = require('mime');
+
+
 function send404(res){
   res.writeHead(404, {"Content-Type": "text/plain"});
   res.write("Error 404: Resource not found");

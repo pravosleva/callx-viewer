@@ -1,4 +1,4 @@
-# Callx-Viewer
+# Callx-Viewer 2017
 
 ![gif](./img/callx-viewer.gif)
 
@@ -8,14 +8,14 @@ This is simple audioplayer for mp3 tracks (all mp3 should be put to `./test-audi
 Can be searched by substring in file name string.
 Based on [jPlayer](http://jplayer.org/latest/demo-02-jPlayerPlaylist/?theme=0).
 
-## Easy start
+## Quick start
 
 ```
-npm install
-node index.js
+npm i
+npm start
 ```
 
-Will be started locally on :8080.
+Will be started on [localhost:3000](http://localhost:3000).
 
 ## TODO
 

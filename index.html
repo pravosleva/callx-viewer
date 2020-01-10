@@ -65,7 +65,6 @@
       </span>
     </div>
 
-
     <div id="wrapper" class="animated fadeIn">
       <div id="jquery_jplayer_1" class="jp-jplayer"></div>
       <div id="jp_container_1" class="jp-audio" role="application" aria-label="media player">
@@ -138,7 +137,7 @@
       console.log(typeof confirmed);
       if( confirmed ){
         fileName = encodeURIComponent(fileName);
-        httpGET({ url: `http://localhost:8080/removeFile?fileName=${fileName}`, cb: (text) => {
+        httpGET({ url: `http://localhost:3000/removeFile?fileName=${fileName}`, cb: (text) => {
           pasteHTML(`.info`, `<span class='text-info'>GET COMPLETED: ${text}</span>`);
           // Need to call next ()...
         } });
@@ -146,7 +145,9 @@
         //alert(`Removing from folder aborted.`);
       }
     };
-    function pasteHTML (selector, html) { $(selector).html(html) };
+    function pasteHTML (selector, html) {
+      $(selector).html(html);
+    };
     function setupAudio (arr) { //console.info(arr);
       // Read more: https://github.com/jplayer/jPlayer/blob/master/examples/blue.monday/demo-02-jPlayerPlaylist.html
       let myPlaylist = new jPlayerPlaylist(
@@ -178,14 +179,14 @@
       $('.jp-play').focus();
     };
     $(function(){
-      var default_html = '<strong  class="text-muted">GET to back-end</strong><br />For example: <code>http://localhost:8080/filter?substr=</code>';
+      var default_html = '<strong  class="text-muted">GET to back-end</strong><br />For example: <code>http://localhost:3000/filter?substr=</code>';
       pasteHTML(".info", default_html); // first
-      httpGET({ url: "http://localhost:8080/filter?substr=", cb: (arrWasNotParsed) => setupAudio(JSON.parse(arrWasNotParsed)) });
+      httpGET({ url: "http://localhost:3000/filter?substr=", cb: (arrWasNotParsed) => setupAudio(JSON.parse(arrWasNotParsed)) });
       // Handlers should be set:
       $(".search").click(() => {
         if($('#substr').val()){
           httpGET({
-            url: ("http://localhost:8080/filter?substr=" + document.getElementById('substr').value),
+            url: ("http://localhost:3000/filter?substr=" + document.getElementById('substr').value),
             cb: (arrWasNotParsed) => setupAudio(JSON.parse(arrWasNotParsed))
           })
         }else{
@@ -198,7 +199,7 @@
           //console.log(typeof e.target.value, e.target.value.length)
           if(e.target.value){
             httpGET({
-              url: "http://localhost:8080/filter?substr=" + e.target.value,
+              url: "http://localhost:3000/filter?substr=" + e.target.value,
               cb: (arrWasNotParsed) => setupAudio(JSON.parse(arrWasNotParsed))
             })
           }else{
